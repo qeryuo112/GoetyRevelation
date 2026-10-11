@@ -1,0 +1,37 @@
+# ---- Gradle ----
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---- IDE ----
+.idea/
+*.iml
+*.ipr
+*.iws
+.eclipse/
+.classpath
+.project
+.settings/
+.vscode/
+*.launch
+
+# ---- Minecraft 运行目录 ----
+run/
+runs/
+logs/
+
+# ---- 发布 ----
+mcmodsrepo/
+
+# ---- 本地依赖 jar（体积大，不入库；见 README/说明）----
+libs/
+
+# ---- 本地参考源码（不纳入本仓库）----
+Goety-3/
+Curios/
+reference/
+
+# ---- 工具 / 系统 ----
+.workbuddy/
+.DS_Store
+Thumbs.db
