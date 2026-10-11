@@ -23,8 +23,20 @@ logs/
 # ---- 发布 ----
 mcmodsrepo/
 
-# ---- 本地依赖 jar（体积大，不入库；见 README/说明）----
+# ---- 本地依赖 jar ----
 libs/
+
+# ---- 第三方 / 闭源 jar（All Rights Reserved，严禁公开分发）----
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---- 反编译产物（由闭源模组派生，严禁公开分发）----
+decompiled/
+decompiled-raw/
+*.tsrg
+srg2official.tsv
+client.txt
+server.txt
 
 # ---- 本地参考源码（不纳入本仓库）----
 Goety-3/
