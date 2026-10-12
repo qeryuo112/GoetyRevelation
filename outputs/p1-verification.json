@@ -1,0 +1,53 @@
+{
+  "scope": "P0 baseline and limited P1 Halo foundation; NOT full mod port",
+  "python_tests": {
+    "count": 26,
+    "passed": 26,
+    "log": "build/p1-python-green.log"
+  },
+  "gametests": {
+    "count": 7,
+    "passed": 7,
+    "log": "build/p1-independent-gametest.log",
+    "cases": [
+      "registration_namespace",
+      "curios_capability_and_head_tag",
+      "config_seven_root_keys",
+      "dropped_halo_lifetime",
+      "item_registration",
+      "dropped_halo_immune",
+      "tooltip_branches"
+    ]
+  },
+  "client_smoke": {
+    "duration_limit_seconds": 70,
+    "result": "resource reload, sound startup, client tooltip subscriber registered; terminated by timeout, not a clean exit",
+    "log": "build/p1-client-smoke.log",
+    "error_fatal_lines": 0,
+    "not_verified": [
+      "manual Shift/Alt GUI interaction",
+      "F3+T reload",
+      "two-client sync",
+      "packaged jar launch"
+    ]
+  },
+  "packaging": {
+    "result": "BUILD SUCCESSFUL after corresponding tests",
+    "jar": "outputs/goety_neorevelation-0.1.0-P1.jar",
+    "bytes": 22852,
+    "sha256": "bf7b9fe8a8d40c94a5069360d8618f888d813ecd45647cced568561641d23c3b",
+    "dev_tests_excluded": true,
+    "gradle_test_tasks": "NO-SOURCE; verification comes from Python and real GameTest, not gradle test"
+  },
+  "pending": [
+    "P2 wearer state/combat/resurrection/cooldowns",
+    "P3 Apostle AI and spells",
+    "P4 expanded Fix content",
+    "P5 shaders fonts models compat",
+    "Ending Library full port/native equivalents"
+  ],
+  "git": {
+    "commit_push": false,
+    "baseline": "b5f01599d03e6c9a8b0d7e47f626450a6d7556ba"
+  }
+}

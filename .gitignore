@@ -43,6 +43,10 @@ Goety-3/
 Curios/
 reference/
 
+# ---- Python 回归测试缓存 ----
+__pycache__/
+*.pyc
+
 # ---- 工具 / 系统 ----
 .workbuddy/
 .DS_Store

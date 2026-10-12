@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8.7",
+  "package": "z1gned.goetyneorevelation.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ItemEntityMixin",
+    "HaloLivingMixin",
+    "HaloPlayerMixin",
+    "HaloMonolithMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "feedback": {
+    "give": "inventory item plus permanent unpickable ground display",
+    "halo": "wearing complete Halo appears ineffective and player killed by WitherServant"
+  },
+  "confirmed_scope": "Fix both according to original fix2, install entity display helper in development only, restart project client",
+  "changes": {
+    "give": "Match permanent pickup delay plus original near-expiry age, skip protection and restore expiry of saved command displays",
+    "undead": "Restore original canAttack suppression; default true, Apostle exception, false uses Goety health threshold; full equipped Halo only"
+  },
+  "verification": {
+    "python": {
+      "passed": 67,
+      "total": 67,
+      "log": "build/manual-feedback-python-green.log"
+    },
+    "gametest": {
+      "passed": 33,
+      "total": 33,
+      "new_cases": 6,
+      "log": "build/manual-feedback-gametest-verified.log",
+      "red_log": "build/manual-feedback-red-commands.log"
+    },
+    "build": {
+      "result": "BUILD SUCCESSFUL after tests",
+      "log": "build/manual-feedback-build.log"
+    }
+  },
+  "artifact": {
+    "path": "outputs/goety_neorevelation-0.1.0-P2-hotfix1.jar",
+    "bytes": 65347,
+    "sha256": "8dd151f38aa9e1944b95437cee61986d48b93836fd7dc1d1974bd195d9ad8015",
+    "gametests_excluded": true,
+    "jade_bundled": false
+  },
+  "dev_helper": {
+    "name": "Jade",
+    "version": "15.10.6+neoforge",
+    "minecraft": [
+      "1.21.1"
+    ],
+    "loaders": [
+      "neoforge"
+    ],
+    "modrinth_version": "eYz2YBGT",
+    "url": "https://cdn.modrinth.com/data/nvQzSEkH/versions/eYz2YBGT/Jade-1.21.1-NeoForge-15.10.6.jar",
+    "sha512": "dad9755dce8d85d914fc4df2baa0211f13e5839a71c1925fdd01f69081a95e30a2934e6273f8b01f0169adebe7a9dae57a8d904de0c4cb36dc17369bb474f0f2",
+    "installed": "run/client/mods/Jade-1.21.1-NeoForge-15.10.6.jar"
+  },
+  "client": {
+    "log": "build/dev-client-manual-hotfix1-2026-10-12.log",
+    "running_at_last_check": false,
+    "exit_result": "normal exit; player and world saved; BUILD SUCCESSFUL in 12m 49s",
+    "error_fatal_lines": 0,
+    "automatic_timeout": false,
+    "directory": "run/client",
+    "jade_plugins_initialized": true,
+    "resource_and_sound_initialized": true,
+    "startup_warning": "Jade reports duplicate minecraft:animal_owner provider (also provided by Goety); no ERROR/FATAL at startup check"
+  },
+  "preserved": {
+    "revival_cooldown_ticks": 36000,
+    "temporary_protection_ticks": 400,
+    "permanent_damage_immunity_added": false,
+    "world_manually_edited": false,
+    "git_commit_push": false
+  },
+  "manual_acceptance": {
+    "user_report_date": "2026-10-12",
+    "resolved_in_this_feedback": ["give-command display ghosts", "complete Halo undead attack suppression"],
+    "reported_remaining_issue": {
+      "id": "SPELL-001",
+      "description": "佩戴晋升之环尚未改变聚晶法术行为",
+      "status": "not implemented / manual test not passed",
+      "planned_stage": "P3 spell adaptations",
+      "development": "paused by user; record only in this turn"
+    },
+    "scope_note": "User's only remaining issue in this manual session does not mean the full original mod or all pending validation passed"
+  },
+  "limits": [
+    "No new potion effect/status icon; server abilities are not vanilla status effects",
+    "Jade entity information does not expose custom Halo cooldowns automatically",
+    "Still a P2 stage, not full original port",
+    "Standalone packaged jar and two real-client network not proven by these tests"
+  ]
+}

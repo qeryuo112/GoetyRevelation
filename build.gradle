@@ -76,6 +76,9 @@ dependencies {
 }
 
 tasks.named('jar', Jar).configure {
+    // GameTests run from development output, never ship in the playable artifact.
+    exclude 'z1gned/goetyneorevelation/gametest/**'
+    exclude 'data/goety_neorevelation/structure/empty.nbt'
     manifest {
         attributes([
                 'Specification-Title'     : mod_id,

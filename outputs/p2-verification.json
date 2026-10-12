@@ -1,0 +1,53 @@
+{
+  "scope": "P2 Halo state/combat/revive with original WitherServant dependency; not full mod port",
+  "target": {
+    "minecraft": "1.21.1",
+    "neoforge": "21.1.259",
+    "minimum": "21.1.259"
+  },
+  "python": {
+    "count": 63,
+    "passed": 63,
+    "log": "build/p2-python-green.log"
+  },
+  "gametest": {
+    "count": 27,
+    "passed": 27,
+    "log": "build/p2-gametest-final.log",
+    "old_p1_tests": 7,
+    "new_p2_tests": 20
+  },
+  "client": {
+    "smoke_seconds": 50,
+    "result": "renderer event and resource startup without ERROR/FATAL; controlled timeout, not normal exit",
+    "log": "build/p2-client-smoke.log",
+    "two_real_clients_verified": false
+  },
+  "artifact": {
+    "path": "outputs/goety_neorevelation-0.1.0-P2.jar",
+    "bytes": 64168,
+    "runtime_classes": 25,
+    "sha256": "4cab2dcc1f3f3e5050d835471898014e270a571597cf624520d9398adff47b46",
+    "dev_tests_excluded": true,
+    "standalone_jar_launch_verified": false
+  },
+  "sync": {
+    "implementation": "native AttachmentType.sync backport verified via .259 javap and patched source",
+    "codec_bytes": 26,
+    "roundtrip_verified": true,
+    "no_C2S": true,
+    "real_login_tracking_dimension_network_tested": false
+  },
+  "pending": [
+    "two-real-client end-to-end network",
+    "full old-world upgrade",
+    "Apollyon boss AI and spells",
+    "Halo spell cost/cast/focus cooldown modifiers (P3)",
+    "Apocalyptium/Odamane/other Fix compat",
+    "global SavedData first-kill rewards (boss/content stages)",
+    "Shader/ambient full rendering"
+  ],
+  "git": {
+    "commit_push": false
+  }
+}

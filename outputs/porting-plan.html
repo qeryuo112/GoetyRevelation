@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Goety: Neo Revelation · 代码审查与移植方案</title>
+<style>
+:root{color-scheme:light;--ink:#213248;--muted:#617189;--line:#dbe3ed;--blue:#185fa5;--pale:#eef5fc;--amber:#854f0b;--warm:#fff5e3}*{box-sizing:border-box}body{margin:0;background:#f7f9fc;color:var(--ink);font:15px/1.75 system-ui,-apple-system,"Noto Sans CJK SC",sans-serif}main{max-width:1150px;margin:auto;padding:44px 38px 64px}header{border-bottom:1px solid var(--line);padding-bottom:28px}h1{font-size:30px;line-height:1.35;margin:12px 0 16px}h2{font-size:21px;margin:34px 0 14px}h3{font-size:17px;margin:22px 0 10px}p{margin:10px 0}.eyebrow{font-size:12px;letter-spacing:1.5px;color:var(--blue)}.sub{color:var(--muted);font-size:14px}.pill{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:5px;padding:3px 10px;font-size:12px;margin:0 8px 6px 0}.hero{background:var(--pale);border-left:4px solid var(--blue);padding:18px 22px;margin-top:22px}.warning{background:var(--warm);border-left:4px solid #bd882c;padding:16px 22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}.stat{background:#fff;border:1px solid var(--line);padding:20px}.stat b{display:block;font-size:29px;color:var(--blue);line-height:1.3}.stat span{font-size:13px;color:var(--muted)}.panel{border:1px solid var(--line);background:#fff;padding:24px;margin:20px 0}.table-wrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 13px}th{background:#eef3f9;color:#334d6c}td:first-child{font-weight:500}code{font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere;background:#f0f3f7;padding:2px 5px}a{color:var(--blue)}.steps{list-style:none;padding:0;margin:0}.steps li{display:grid;grid-template-columns:44px 1fr;gap:15px;padding:15px 0;border-bottom:1px solid var(--line)}.step-label{background:var(--pale);color:var(--blue);padding:4px 0;align-self:start;text-align:center;font-size:13px}.steps b{font-size:15px}.steps p{font-size:13px;color:var(--muted);margin:3px 0}.status{font-size:12px;color:var(--amber)}footer{border-top:1px solid var(--line);margin-top:34px;padding-top:18px;font-size:12px;color:var(--muted)}@media(max-width:700px){main{padding:25px 18px}.grid{grid-template-columns:1fr}h1{font-size:25px}.panel{padding:16px}th,td{padding:10px 9px}}@media print{body{background:#fff}main{padding:20px}.panel,.stat{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="eyebrow">Goety: Neo Revelation / 本地代码审查</div>
+<h1>以原产物的组合行为为基准，<br>分模块移植到 NeoForge 1.21.1</h1>
+<p class="sub">2026-10-12 · 范围与命名空间方案已确认 · P0 基线已建立，限定 P1 正在实施 · 完整证据及 42 项 Mixin 矩阵见同目录 Markdown 报告</p>
+<span class="pill">Forge 1.20.1 → NeoForge 21.1.259</span><span class="pill">NeoGradle 7.1.38 / Java 21</span><span class="pill">范围与命名空间已确认</span>
+<div class="hero"><strong>推荐结论</strong><p>保留业务逻辑，定点适配接口，去除旧加载器补丁的清空重写依赖，按测试门槛逐批推进。不能只把外层 93 个 Java 文件复制进工程，也不能仅替换 Forge 包名。</p></div>
+</header>
+<section>
+<div class="grid">
+<div class="stat"><b>93 Java</b><span>外层 112 class / 8312 行</span></div>
+<div class="stat"><b>878 class</b><span>内嵌 RevelationFix 4.7，之前未全量反编译</span></div>
+<div class="stat"><b>42 + 220</b><span>外层与补丁配置 Mixin，不等于实际注入数</span></div>
+</div>
+<h2>决定方案的四个发现</h2>
+<div class="panel table-wrap"><table>
+<thead><tr><th>发现</th><th>实际证据</th><th>对移植的影响</th></tr></thead>
+<tbody>
+<tr><td>内嵌补丁是核心行为来源</td><td>清理表含 25 个外层类，与外层配置交集为 24；LaunchPlugin 清空旧 Mixin。</td><td>Boss、玩家光环、法术和渲染优先移植补丁后的实现，不能同时恢复两套逻辑。</td></tr>
+<tr><td>还有必需 Library 能力</td><td>补丁 metadata 声明 <code>ending_library [2.2.1fix, )</code>，plugin 继承其实现。</td><td>先建立库能力依赖表；接入或替代尚未验证，不能默默删掉依赖功能。</td></tr>
+<tr><td>反编译源码并不完全可信</td><td><code>SPEC.build()</code> 在反编译源码被提前，但原字节码最后才执行。</td><td>关键初始化和注入注解必须回查字节码；SRG 清零不等于可编译或行为等价。</td></tr>
+<tr><td>注册与掉落被补丁改变</td><td>第五个物品 path 改为 <code>revelation</code>；旧死亡事件被无条件取消。</td><td>注册清单、资源引用和一次性奖励按完整产物核对；不是全局 namespace 改变。</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2>明确的接口迁移点</h2>
+<div class="panel table-wrap"><table>
+<thead><tr><th>范围</th><th>目标做法</th></tr></thead>
+<tbody>
+<tr><td>主入口 / 注册 / 配置</td><td>注入 mod bus，NeoForge 注册类型和配置生命周期；恢复 define → build 顺序。</td></tr>
+<tr><td>实体 / 玩家状态</td><td><code>SynchedEntityData.Builder</code>、四参 spawn、新掉落签名；尺寸改 <code>getDefaultDimensions</code>；服务端推进状态。</td></tr>
+<tr><td>伤害链 / 光环</td><td>区分 IncomingDamage、Damage.Pre/Post 与吸收量位置；不能照搬旧 ForgeHooks Redirect。</td></tr>
+<tr><td>效果 / 附魔 / 物品状态</td><td>Holder、ResourceKey、DataComponents 与新 ingredient；Curios 查询 helper 可保留。</td></tr>
+<tr><td>存档 / 补丁网络</td><td>SavedData.Factory + HolderLookup；payload + StreamCodec，方向及主线程明确。</td></tr>
+<tr><td>资源 / 数据</td><td>资源 format 34，数据 format 48；原版目录单数化；108 配方按各 serializer Codec 转换。</td></tr>
+<tr><td>客户端 / Shader</td><td>client-only Mixin/事件；按新版 AT、GLSL fog、顶点提交适配；独立服务器不能加载 client 类。</td></tr>
+</tbody>
+</table></div>
+</section>
+<section>
+<h2>推荐执行顺序</h2>
+<div class="panel"><ol class="steps">
+<li><span class="step-label">P0</span><div><b>补齐完整行为基线</b><p>反编译内嵌 Fix，列有效 Mixin、注册 ID、资源覆盖和 Library 能力。先修正范围认识，不改游戏数值。</p></div></li>
+<li><span class="step-label">P1</span><div><b>工程加载与注册最小链路</b><p>配置、注册、Mixin/AT、客户端隔离；补测试设施，客户端和独立服务器均能启动。</p></div></li>
+<li><span class="step-label">P2</span><div><b>光环状态 → 同步 → 伤害 / 冷却</b><p>装备、免疫、减伤、复活、持久化和一次性奖励；先验证无双 tick、无双端生成。</p></div></li>
+<li><span class="step-label">P3</span><div><b>Boss / 召唤 / 法术</b><p>补丁后阿波利翁行为及阶段、仪式变体、目标选择、投射物；普通 Apostle 不重复增强。</p></div></li>
+<li><span class="step-label">P4</span><div><b>补丁扩展内容与数据</b><p>装备、方块、附魔、配方和结构，补必要库能力；核心注册与 Codec 测试真实通过。</p></div></li>
+<li><span class="step-label">P5</span><div><b>客户端与可选兼容</b><p>UI、字体、模型、音乐、Shader；资源重载和双客户端显示；兼容项逐个启用验证。</p></div></li>
+<li><span class="step-label">P6</span><div><b>完整回归 → 构建 → 成品加载</b><p>对应测试不为 NO-SOURCE，全部通过后再打包；开发运行与成品 jar 分别测试。</p></div></li>
+</ol></div>
+<div class="warning"><strong>严格测试先行</strong><p>最初骨架只有 GameTest 运行配置，没有真实测试。本次实施正在补静态回归和实际 GameTest。空骨架 build 成功不是实际移植代码通过；每次修改先运行对应测试，通过后才进入构建。最新结果见本轮首批实施报告。</p></div>
+</section>
+<section>
+<h2>本轮已确认的两个决定</h2>
+<div class="panel table-wrap"><table><thead><tr><th>决定</th><th>推荐</th><th>替代方案</th></tr></thead><tbody>
+<tr><td>移植范围</td><td>当前 fix2 完整产物为最终目标，分批推进；先补内嵌 Fix 分析。</td><td>只移植外层基线：较小，但明确不包含当前补丁完整内容。</td></tr>
+<tr><td>标识与资源 ID</td><td>保持已确认 <code>goety_neorevelation</code> mod id；初期保留原资源 / 注册 namespace。</td><td>全迁新 namespace：需完整 ID 映射并处理配方、模型、结构 / NBT 和兼容引用。</td></tr>
+</tbody></table></div>
+<p><strong>用户已选择：完整产物分批移植＋初期保留旧命名空间，并授权开始实施。</strong> P0 已取得 Ending Library 与内嵌 Fix 可读参考、条件注入及依赖清单；限定 P1 仅覆盖两个光环基础物品和配置，不等于佩戴战斗或全量移植。保留 namespace 不保证跨版本旧存档安全；公开派生源码与资源的授权范围须单独确认。</p>
+</section>
+<footer>
+本页保留总体路线；本次已开始首批代码实施，不自动提交 Git，也不访问用户游戏实例。内嵌 Fix 733 Java 已可读化，Ending Library 已锁定 1.20.1 源码；完整玩法、库迁移、结构及客户端视觉仍按后续批次验证。详见 2026-10-12-P0依赖与行为基线.md 及首批实施报告。
+</footer>
+</main>
+</body>
+</html>

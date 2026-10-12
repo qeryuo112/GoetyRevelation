@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Goety Neo Revelation · P0/P1 首批实施结果</title>
+<style>
+:root{color-scheme:light;--ink:#21334a;--muted:#63758a;--blue:#205fa4;--line:#dbe4ed}*{box-sizing:border-box}body{margin:0;background:#f5f8fc;color:var(--ink);font:15px/1.75 system-ui,"Noto Sans CJK SC",sans-serif}main{max-width:1080px;margin:auto;padding:42px 34px 70px}h1{font-size:32px;line-height:1.35;margin:12px 0}h2{font-size:22px;margin:32px 0 14px}.eyebrow{color:var(--blue);font-size:12px;letter-spacing:1.4px}.sub{color:var(--muted)}.notice{background:#fff6e5;border-left:4px solid #bd882c;padding:16px 22px;margin:24px 0}.hero{background:#eaf3fc;border-left:4px solid var(--blue);padding:18px 22px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px 0}.stat,.panel{background:white;border:1px solid var(--line);padding:22px}.stat strong{display:block;font-size:31px;color:var(--blue)}.stat span{font-size:13px;color:var(--muted)}table{border-collapse:collapse;width:100%;font-size:13px}td,th{padding:12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}th{background:#edf3f9}code{background:#f0f4f8;padding:2px 5px;font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}a{color:var(--blue)}.pill{display:inline-block;font-size:12px;background:#eef5fb;border:1px solid var(--line);padding:3px 10px;margin:6px 7px 0 0}.steps{display:flex;gap:10px;flex-wrap:wrap}.step{background:#fff;border:1px solid var(--line);padding:12px 16px}.step b{color:var(--blue)}footer{margin-top:32px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:12px}@media(max-width:700px){main{padding:26px 18px}.grid{grid-template-columns:1fr}h1{font-size:25px}.panel{overflow-x:auto}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">Goety: Neo Revelation / 首批本地实施</div><h1>依赖基线已补齐，<br>光环基础链路已通过真实游戏测试</h1><p class="sub">2026-10-12 · Minecraft 1.21.1 · NeoForge 21.1.259 · Java 21</p><span class="pill">P0 来源与依赖基线完成</span><span class="pill">限定 P1 完成</span><span class="pill">未提交或推送 Git</span></header>
+<div class="notice"><strong>阶段基础版，不是完整移植版。</strong><br>当前覆盖两个光环的注册、属性、提示、Curios、配置及掉落实体保护。佩戴战斗、复活、冷却、Boss、法术、完整扩展和 Shader 仍按后续批次实施。</div>
+<div class="grid"><div class="stat"><strong>26 / 26</strong><span>本地回归测试通过</span></div><div class="stat"><strong>7 / 7</strong><span>独立开发服务器 GameTest 通过</span></div><div class="stat"><strong>733 Java</strong><span>内嵌 Fix 原始与可读化参考已就绪</span></div></div>
+<section><h2>这次实际做了什么</h2><div class="hero"><b>完整范围不缩水，实施按小批验证。</b><p>新 mod id 保持 <code>goety_neorevelation</code>；物品与资产 namespace 保留 <code>goety_revelation</code>。Ending Library 已克隆并锁定 1.20.1 源码，不把旧 Forge 库直接塞入 NeoForge 运行时。</p></div><div class="panel"><table><thead><tr><th>模块</th><th>已实现与已验证</th></tr></thead><tbody>
+<tr><td>两个光环</td><td>真实旧 ID；堆叠上限 1；完整 EPIC、破损 RARE；不可附魔；补丁后的耐火组件</td></tr>
+<tr><td>Curios</td><td>ICurio 能力实际存在；加载后的 curios:head 标签包含两光环</td></tr>
+<tr><td>提示</td><td>Shift 12 行、Alt 19 行、默认 2 行；Shift 优先；默认提示保留补丁后的两个翻译键</td></tr>
+<tr><td>配置</td><td>七项根级原键实际载入；健康默认 666；正确 define → build；载入/重载调试日志</td></tr>
+<tr><td>掉落实体保护</td><td>拒绝 generic/explosion/outOfWorld hurt；Age 5999/6000/32767 保存重读不因寿命过期；普通石头仍可受伤且正常消失</td></tr>
+<tr><td>客户端隔离</td><td>Screen 仅在客户端；独立服务器 GameTest 可加载；客户端完成资源初始化与提示事件订阅</td></tr>
+</tbody></table></div></section>
+<section><h2>Ending Library 与 P0 基线</h2><div class="panel"><p>源码：<code>reference/ending_library</code>，分支 <code>1.20.1</code>，提交 <code>562c04751521802939d9ccc8201e7602841bb02b</code>。MIT / 2.2.1fix / Forge 47.3.12 / Java 17；本次可见远程没有 1.21.1 分支。</p><p>已建立 220 配置 Mixin、24 个旧覆盖关系、90 个 Library import 的来源、物品注册 path、条件兼容、13 次旧网络注册和资源冲突清单。方法/字段 SRG 残留 0，参数名保留避免作用域碰撞。</p><p>新证据：外层第五项改名为 <code>revelation</code> 后，Fix 又注册真正的 <code>wither_quietus_focus</code>；两个光环“不随时间消失”来自 Library 的隐式 tag，不能只用耐火属性替代。</p></div></section>
+<section><h2>验证与阶段产物</h2><div class="panel"><table><thead><tr><th>验证</th><th>结果与边界</th></tr></thead><tbody><tr><td>测试先行</td><td>已先复现映射遗漏与 P1 六项缺失，再修复；最终 26 回归测试全过</td></tr><tr><td>GameTest</td><td><code>All 7 required tests passed :)</code>，真实注入和高龄/普通物品控制组均验证</td></tr><tr><td>客户端 smoke</td><td>资源重载初始化、声音引擎、客户端订阅完成；无 ERROR/FATAL。70 秒主动限时终止，不是正常退出成功，也不是手动 GUI/双客户端验收</td></tr><tr><td>构建</td><td>对应测试后 BUILD SUCCESSFUL；检查 jar 排除了开发测试、empty.nbt、旧 Forge 库和嵌套原 jar</td></tr></tbody></table><p><a href="goety_neorevelation-0.1.0-P1.jar">下载 P1 阶段 jar（22,852 字节）</a> · <a href="2026-10-12-首批移植实施记录.md">查看完整实施记录</a> · <a href="p1-verification.json">验证摘要</a></p><p class="sub">需要 Goety-3 3.2.0、Curios 9.5.1+1.21.1。当前 jar 尚未单独在成品环境加载，不能作为原模组完整替代品。</p></div></section>
+<section><h2>下一批</h2><div class="steps"><div class="step"><b>P2</b><br>佩戴状态、保存同步、伤害/冷却/复活</div><div class="step"><b>P3</b><br>阿波利翁、召唤、AI 与法术</div><div class="step"><b>P4–P5</b><br>扩展内容、数据、界面与兼容</div><div class="step"><b>P6</b><br>完整回归与成品加载</div></div></section>
+<footer>未访问用户游戏实例或 .minecraft；开发运行仅使用项目 run 目录。未 commit/push。本地移植许可不自动等于所有派生源码与资源的公开再分发许可。</footer>
+</main></body></html>

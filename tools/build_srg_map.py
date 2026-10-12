@@ -91,8 +91,10 @@ def main():
                 if not line[0].isspace():
                     m = re.match(r'^(.+) -> (.+):\s*$', line.strip())
                     if m:
-                        obf2off[m.group(2)] = m.group(1)
-                        cur = m.group(2)
+                        # ProGuard preserves dots for unobfuscated owners such as
+                        # MinecraftServer; TSRG/JVM always use internal slash names.
+                        cur = m.group(2).replace('.', '/')
+                        obf2off[cur] = m.group(1)
                     continue
                 if cur is None:
                     continue

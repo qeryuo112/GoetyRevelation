@@ -38,3 +38,7 @@ type="required"
 versionRange="[9.5.1,)"
 ordering="AFTER"
 side="BOTH"
+
+# Two Halo item entities only. Injection count is enforced inside Mixin JSON/@Inject.
+[[mixins]]
+config = "goety_neorevelation.mixins.json"
